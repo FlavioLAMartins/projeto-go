@@ -6,16 +6,21 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 func ConfigServer() {
-	router := mux.NewRouter().StrictSlash(true)
-	ConfigRoutes(router)
+	n := negroni.Classic()
+	n.Use(applicationJSON())
+	n.Use(basicAuth())
+	r := mux.NewRouter().StrictSlash(true)
+	n.UseHandler(r)
+	RegisterAPI(r)
 	fmt.Println("Server on :5000 ")
-	log.Fatal(http.ListenAndServe(":5000", router))
+	log.Fatal(http.ListenAndServe(":5000", r))
 }
 
-func ConfigRoutes(router *mux.Router) {
+func RegisterAPI(router *mux.Router) {
 
 	router.HandleFunc("/products", CreateProduct).Methods("POST")
 
