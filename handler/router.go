@@ -5,22 +5,25 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func RegisterAPI(r *mux.Router) {
+func RegisterAPI(r *mux.Router, n *negroni.Negroni) {
 
-	n := negroni.Classic()
+	api := r.PathPrefix("/api/v1").Subrouter()
+
 	n.Use(applicationJSON())
-	n.Use(basicAuth())
+	n.Use(isAuth())
 
-	n.UseHandler(r)
+	api.Handle("/user/login", n.With(
+		negroni.Wrap(authLogin()),
+	)).Methods("POST", "OPTIONS")
 
-	r.HandleFunc("/products", CreateProduct).Methods("POST")
+	api.HandleFunc("/products", CreateProduct).Methods("POST")
 
-	r.HandleFunc("/products", GetAllProducts).Methods("GET")
+	api.HandleFunc("/products", GetAllProducts).Methods("GET")
 
-	r.HandleFunc("/products/{id}", GetById).Methods("GET")
+	api.HandleFunc("/products/{id}", GetById).Methods("GET")
 
-	r.HandleFunc("/products/{id}", DeleteById).Methods("DELETE")
+	api.HandleFunc("/products/{id}", DeleteById).Methods("DELETE")
 
-	r.HandleFunc("/products/{id}", UpdateById).Methods("PUT")
+	api.HandleFunc("/products/{id}", UpdateById).Methods("PUT")
 
 }

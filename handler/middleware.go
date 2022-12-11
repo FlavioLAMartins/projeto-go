@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"deposito/entity"
 	"net/http"
 
 	"github.com/urfave/negroni"
@@ -14,21 +14,23 @@ func applicationJSON() negroni.Handler {
 	})
 }
 
-func basicAuth() negroni.Handler {
+func isAuth() negroni.Handler {
 	return negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+
 		if r.URL.Path == "/api/v1/user/login" {
 			next(w, r)
 			return
 		}
 
-		user, pass, ok := r.BasicAuth()
-		if !ok || user != "admin" || pass != "admin" {
-			w.WriteHeader(http.StatusUnauthorized)
-			fmt.Fprintln(w, `{"error": "Unauthorized"}`)
-			return
+		tmp_token := r.Header.Get("Authorization")
+		if len(tmp_token) > 0 {
+			if tmp_token[7:] == entity.USER_TOKEN {
+				next(w, r)
+				return
+			}
 		}
 
-		w.Header().Set("WWW-Authenticate", `Basic realm="Restricted"`)
-		next(w, r)
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(`{"MSG": "Error token invalid", "codigo": 401}`))
 	})
 }
