@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	r := mux.NewRouter().StrictSlash(true)
+	r := mux.NewRouter()
 	n := negroni.New(
 		negroni.NewLogger(),
 	)

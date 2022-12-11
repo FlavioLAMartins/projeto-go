@@ -16,14 +16,14 @@ func RegisterAPI(r *mux.Router, n *negroni.Negroni) {
 		negroni.Wrap(authLogin()),
 	)).Methods("POST", "OPTIONS")
 
-	api.HandleFunc("/products", CreateProduct).Methods("POST")
+	api.HandleFunc("/product", CreateProduct).Methods("POST")
 
 	api.HandleFunc("/products", GetAllProducts).Methods("GET")
 
-	api.HandleFunc("/products/{id}", GetById).Methods("GET")
+	api.HandleFunc("/product/{id}", GetById).Methods("GET")
 
-	api.HandleFunc("/products/{id}", DeleteById).Methods("DELETE")
+	api.HandleFunc("/product/{id}", DeleteById).Methods("DELETE")
 
-	api.HandleFunc("/products/{id}", UpdateById).Methods("PUT")
+	api.HandleFunc("/product/{id}", UpdateById).Methods("PUT")
 
 }
