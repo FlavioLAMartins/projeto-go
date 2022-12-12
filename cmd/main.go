@@ -16,6 +16,6 @@ func main() {
 		negroni.NewLogger(),
 	)
 	handler.RegisterAPI(r, n)
-	fmt.Println("Server on :5000 ")
-	log.Fatal(http.ListenAndServe(":5000", r))
+	fmt.Println("Server on :8080 ")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
